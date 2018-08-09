@@ -19,6 +19,7 @@ class Login extends Component {
 			if(!authorizedUser.length) {
 				alert("Unauthorized User....Please provide valid credentials to proceed further!!!");
 			} else {
+				// Routing to home page
 				this.props.history.push('/home');
 			}
 		});	
@@ -29,7 +30,8 @@ class Login extends Component {
   }
 
   render() {
-
+	
+	// Inline styles in react
 	const leftPanel = {
     	backgroundImage: `url(${logo})`
 	}

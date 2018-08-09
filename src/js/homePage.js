@@ -1,26 +1,36 @@
 import React, { Component } from 'react';
 import {Redirect} from 'react-router-dom';
+import Table, { ActionMenu } from './table'; 
+import EditUserDetails from './editUserDetails';
+import '../stylesheet/App.css';
+var _ = require('lodash'); // Import lodash 
 
 class Home extends Component {
 
 	constructor(props) {
 		super(props);
+		/*
+			Initialize the state object with 3 properties
+		*/
 		this.state = {
-			usersList : [],
-			showTable : false,
-			activeRecord : {}
+			usersList : [], 		// List of user details 
+			showTable : false,  	// Boolean, show/hide the edit User details row
+			activeRecord : {}		
 		};
+		/*  
+			Get the User details to display in the table 
+		*/
 		fetch('/json/userDetails.json')
 		.then((response) => response.json())
 		.then(res => {
 			this.setState({
 				usersList: res
 			});
-			console.log("The userlist are: ", this.state.usersList);
 		});
 		this.editRow = this.editRow.bind(this);
 	}	
 
+	// Edit user details
 	editRow(user) {
 			
 		this.setState({
@@ -29,14 +39,32 @@ class Home extends Component {
 		});
 	}
 	
-
+	// Update the user details
+	saveUserDetails = (updatedUser) => {
+		
+		var updatedList = _.map(this.state.usersList, function(user){			
+			if(user.id === updatedUser.id) return updatedUser;
+			return user;
+		});
+		this.setState({
+			usersList: updatedList,
+			showTable: false
+		});
+	}
+	
+	// Discard edit changes
+	cancelEditChanges = () => {
+		this.setState({
+			showTable: false
+		});
+	}
+	
 	render() {
 		 
-		
 		return(
-			<div>
+			<div style={{margin: '5em'}}>
 				<h4>Employee Details</h4>
-				<div className="row table">
+				<div className="row">
 					<table className="table">
 					    <thead>
 					      <tr>
@@ -51,79 +79,10 @@ class Home extends Component {
 					    </tbody>
 				    </table>
 				</div>
-				{ this.state.showTable ? <EditUserDetails info={this.state.activeRecord} /> : null }
+				{ this.state.showTable ? <EditUserDetails info={this.state.activeRecord} saveUser = {this.saveUserDetails} cancel={this.cancelEditChanges}/> : null }
 			</div>
 		);
 	}	
-}
-
-class Table extends Component {
-	constructor(props) {
-		super(props);
-
-	}	
-
-	render() {
-		return this.props.usersList.map((user) => {
-			return(
-				<tr>
-					<td key={user.id}> {user.firstName} </td>
-					<td> {user.lastName} </td>
-					<td> {user.email} </td>
-					<td><ActionMenu menu="Edit" rowData={user} trigger={this.props.action}/></td>
-				</tr>
-			);
-		});		
-	}
-}
-
-function ActionMenu(props) {
-	
-	console.log(props.trigger);
-	return (
-		<button type="button" className="btn btn-success editRow" onClick={() => props.trigger(props.rowData)}>{props.menu}</button>
-
-	);
-
-}
-
-class EditUserDetails extends Component {
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			user: props.info
-		}
-
-	}
-
-	render() {
-		return(
-			<div>
-				<h4> Edit the user details </h4>
-				<div className="row">
-					<div className="col-md-4">
-						<label>FirstName</label>
-						<input type="text" name="FirstName" defaultValue={this.state.user.firstName} />
-					</div>
-					<div className="col-md-4">
-						<label>LastName</label>
-						<input type="text" name="LastName" defaultValue={this.state.user.lastName} />
-					</div>
-					<div className="col-md-4">
-						<label>Email</label>
-						<input type="text" name="Email" defaultValue={this.state.user.email} />
-					</div>
-					<div class="row">
-						<div className="col-md-offset-4">
-							<button type="button" onClick={this.saveUserDetails}>Save</button>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-		);
-	}
 }
 
 export default Home;
