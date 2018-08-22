@@ -1,0 +1,47 @@
+label {
+  display: block;
+  color: #07d4ff;
+}
+
+button {
+  color: black;
+  border: 1px solid black !important;
+}
+
+input {
+  margin-bottom: 20px;
+}
+
+.header {
+  padding: 15px;
+  text-align: center;
+  color: #07d4ff;
+}
+
+.table-header {
+	margin-top: 2%;
+	border: 1px solid black;
+}
+
+.addUser {
+	position: absolute;
+	left: 85%;
+	top: 8%;
+}
+
+body {
+	color: black;
+}
+
+.loginForm {
+	position: absolute;
+	left: 45%;
+}
+
+.edit-btn {
+	margin-right: 2%;
+}
+
+.edit-user {
+	margin-top: 2%;
+}
